@@ -1,0 +1,16 @@
+{
+    "postmortems": [
+        {
+            "id": 1,
+            "incident": "asdasd",
+            "prep": "no",
+            "assigned_to": "JaBe, ZuDa, ArIr",
+            "issue_date": "2024-06-05",
+            "in_scope": "yes",
+            "comments": "asd",
+            "identified_issue": "Provider error",
+            "rca": "issue1",
+            "technology": "tech1"
+        }
+    ]
+}
