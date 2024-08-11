@@ -2,15 +2,27 @@
     "postmortems": [
         {
             "id": 1,
-            "incident": "asdasd",
-            "prep": "no",
-            "assigned_to": "JaBe, ZuDa, ArIr",
-            "issue_date": "2024-06-05",
-            "in_scope": "yes",
-            "comments": "asd",
-            "identified_issue": "Provider error",
-            "rca": "issue1",
-            "technology": "tech1"
+            "incident": "System outage",
+            "prep": "2024-08-01",
+            "assigned_to": "John Doe",
+            "issue_date": "2024-08-02",
+            "in_scope": "Yes",
+            "comments": "Investigation ongoing",
+            "identified_issue": "Database failure",
+            "rca": "Insufficient storage",
+            "technology": "PostgreSQL"
+        },
+        {
+            "id": 2,
+            "incident": "Login issue",
+            "prep": "2024-07-15",
+            "assigned_to": "Jane Smith",
+            "issue_date": "2024-07-16",
+            "in_scope": "Yes",
+            "comments": "Resolved",
+            "identified_issue": "Authentication service down",
+            "rca": "Network misconfiguration",
+            "technology": "OAuth2"
         }
     ]
 }
