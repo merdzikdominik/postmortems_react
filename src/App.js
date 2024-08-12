@@ -26,7 +26,7 @@ function App() {
         <EditPostmortem />
         <ExportData />
       </div>
-      {isForm ? <AddPostmortemForm /> : ''}
+      { isForm ? <AddPostmortemForm /> : '' }
       <div className="filter-container">
         <h2>Postmortem table</h2>
         <div style={{ width: "100%", display: "flex", flexDirection: "row" }}>

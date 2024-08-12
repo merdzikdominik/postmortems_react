@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import Pagination from 'react-bootstrap/Pagination';
 import dumbData from "../../dumb_data.json";
 
-const PostmortemTable = ({ filterText }) => {
-    const [data] = useState(dumbData.postmortems);
+const PostmortemTable = ({ filterText="", editable=false }) => {
+    const [data, setData] = useState(dumbData.postmortems);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
@@ -24,21 +24,32 @@ const PostmortemTable = ({ filterText }) => {
         setCurrentPage(pageNumber);
     };
 
+    const handleEdit = (id) => {
+        console.log("Edit item with id:", id);
+    };
+
+    const handleDelete = (id) => {
+        console.log("Delete item with id:", id);
+        const newData = data.filter(row => row.id !== id);
+        setData(newData);
+    };
+
     return (
         <>
             <Table>
                 <thead>
                     <tr>
                         <th style={{ width: "5%" }}>ID</th>
-                        <th style={{ width: "15%" }}>Incident</th>
-                        <th style={{ width: "10%" }}>Prep</th>
-                        <th style={{ width: "15%" }}>Assigned To</th>
+                        <th style={{ width: "10%" }}>Incident</th>
+                        <th style={{ width: "7%" }}>Prep</th>
+                        <th style={{ width: "10%" }}>Assigned To</th>
                         <th style={{ width: "10%" }}>Issue Date</th>
-                        <th style={{ width: "10%" }}>In Scope</th>
+                        <th style={{ width: "7%" }}>In Scope</th>
                         <th style={{ width: "15%" }}>Comments</th>
-                        <th style={{ width: "15%" }}>Identified Issue</th>
+                        <th style={{ width: "10%" }}>Identified Issue</th>
                         <th style={{ width: "10%" }}>RCA</th>
-                        <th style={{ width: "15%" }}>Technology</th>
+                        <th style={{ width: "10%" }}>Technology</th>
+                        { editable && <th style={{ width: "16%" }}>Actions</th> }
                     </tr>
                 </thead>
                 <tbody>
@@ -54,6 +65,23 @@ const PostmortemTable = ({ filterText }) => {
                             <td>{row.identified_issue}</td>
                             <td>{row.rca}</td>
                             <td>{row.technology}</td>
+                            {  editable && <td>
+                                <Button 
+                                    variant="warning" 
+                                    size="sm" 
+                                    onClick={() => handleEdit(row.id)}
+                                    style={{ marginRight: '8px' }}
+                                >
+                                    Edit
+                                </Button>
+                                <Button 
+                                    variant="danger" 
+                                    size="sm" 
+                                    onClick={() => handleDelete(row.id)}
+                                >
+                                    Delete
+                                </Button>
+                            </td> }
                         </tr>
                     ))}
                 </tbody>
