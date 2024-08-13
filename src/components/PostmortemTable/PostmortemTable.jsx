@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, FormControl } from "react-bootstrap";
 import Pagination from 'react-bootstrap/Pagination';
 import dumbData from "../../dumb_data.json";
 
-const PostmortemTable = ({ filterText="", editable=false }) => {
+const PostmortemTable = ({ filterText = "", editable = false }) => {
     const [data, setData] = useState(dumbData.postmortems);
     const [currentPage, setCurrentPage] = useState(1);
+    const [editingRow, setEditingRow] = useState(null); // Przechowywanie ID wiersza, który jest edytowany
     const itemsPerPage = 10;
 
     const filteredData = data.filter((row) =>
@@ -25,12 +26,26 @@ const PostmortemTable = ({ filterText="", editable=false }) => {
     };
 
     const handleEdit = (id) => {
-        console.log("Edit item with id:", id);
+        setEditingRow(id); // Ustawianie ID wiersza do edycji
     };
 
     const handleDelete = (id) => {
-        console.log("Delete item with id:", id);
         const newData = data.filter(row => row.id !== id);
+        setData(newData);
+    };
+
+    const handleSave = (id) => {
+        // Możesz tutaj dodać logikę do zapisywania edytowanych danych
+        setEditingRow(null); // Zakończ edytowanie po zapisaniu
+    };
+
+    const handleInputChange = (e, id, field) => {
+        const newData = data.map(row => {
+            if (row.id === id) {
+                return { ...row, [field]: e.target.value };
+            }
+            return row;
+        });
         setData(newData);
     };
 
@@ -49,39 +64,139 @@ const PostmortemTable = ({ filterText="", editable=false }) => {
                         <th style={{ width: "10%" }}>Identified Issue</th>
                         <th style={{ width: "10%" }}>RCA</th>
                         <th style={{ width: "10%" }}>Technology</th>
-                        { editable && <th style={{ width: "16%" }}>Actions</th> }
+                        {editable && <th style={{ width: "16%" }}>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
                     {currentItems.map((row) => (
                         <tr key={row.id}>
                             <td>{row.id}</td>
-                            <td>{row.incident}</td>
-                            <td>{row.prep}</td>
-                            <td>{row.assigned_to}</td>
-                            <td>{row.issue_date}</td>
-                            <td>{row.in_scope}</td>
-                            <td>{row.comments}</td>
-                            <td>{row.identified_issue}</td>
-                            <td>{row.rca}</td>
-                            <td>{row.technology}</td>
-                            {  editable && <td>
-                                <Button 
-                                    variant="warning" 
-                                    size="sm" 
-                                    onClick={() => handleEdit(row.id)}
-                                    style={{ marginRight: '8px' }}
-                                >
-                                    Edit
-                                </Button>
-                                <Button 
-                                    variant="danger" 
-                                    size="sm" 
-                                    onClick={() => handleDelete(row.id)}
-                                >
-                                    Delete
-                                </Button>
-                            </td> }
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.incident}
+                                        onChange={(e) => handleInputChange(e, row.id, 'incident')}
+                                    />
+                                ) : (
+                                    row.incident
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.prep}
+                                        onChange={(e) => handleInputChange(e, row.id, 'prep')}
+                                    />
+                                ) : (
+                                    row.prep
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.assigned_to}
+                                        onChange={(e) => handleInputChange(e, row.id, 'assigned_to')}
+                                    />
+                                ) : (
+                                    row.assigned_to
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.issue_date}
+                                        onChange={(e) => handleInputChange(e, row.id, 'issue_date')}
+                                    />
+                                ) : (
+                                    row.issue_date
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.in_scope}
+                                        onChange={(e) => handleInputChange(e, row.id, 'in_scope')}
+                                    />
+                                ) : (
+                                    row.in_scope
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.comments}
+                                        onChange={(e) => handleInputChange(e, row.id, 'comments')}
+                                    />
+                                ) : (
+                                    row.comments
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.identified_issue}
+                                        onChange={(e) => handleInputChange(e, row.id, 'identified_issue')}
+                                    />
+                                ) : (
+                                    row.identified_issue
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.rca}
+                                        onChange={(e) => handleInputChange(e, row.id, 'rca')}
+                                    />
+                                ) : (
+                                    row.rca
+                                )}
+                            </td>
+                            <td>
+                                {editingRow === row.id ? (
+                                    <FormControl
+                                        type="text"
+                                        value={row.technology}
+                                        onChange={(e) => handleInputChange(e, row.id, 'technology')}
+                                    />
+                                ) : (
+                                    row.technology
+                                )}
+                            </td>
+                            {editable && (
+                                <td>
+                                    {editingRow === row.id ? (
+                                        <Button variant="success" size="sm" onClick={() => handleSave(row.id)}>
+                                            Save
+                                        </Button>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                onClick={() => handleEdit(row.id)}
+                                                style={{ marginRight: '8px' }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                onClick={() => handleDelete(row.id)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>
@@ -90,7 +205,7 @@ const PostmortemTable = ({ filterText="", editable=false }) => {
             <Pagination>
                 <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
                 <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                
+
                 {[...Array(totalPages)].map((_, idx) => (
                     <Pagination.Item
                         key={idx + 1}

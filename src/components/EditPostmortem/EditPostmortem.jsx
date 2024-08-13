@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PostmortemTable from '../PostmortemTable/PostmortemTable';
+import Filter from '../utils/Filter';
 import { Modal, Button } from 'react-bootstrap';
 import '../../App.css';
 
@@ -21,9 +22,12 @@ const EditPostmortemModal = () => {
                 aria-labelledby="example-modal-sizes-title-lg"
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="example-modal-sizes-title-lg">
-                        Edit postmortem
-                    </Modal.Title>
+                    <div className="filter-container">
+                        <Modal.Title id="example-modal-sizes-title-lg">
+                            Edit postmortem
+                        </Modal.Title>
+                        <Filter />
+                    </div>
                 </Modal.Header>
                 <Modal.Body style={{ padding: '0', maxHeight: '70vh', overflowY: 'auto' }}>
                     <div style={{ width: '100%', overflowX: 'auto' }}>
