@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Table, Button, FormControl } from "react-bootstrap";
 import Pagination from 'react-bootstrap/Pagination';
+import DynamicSelect from "../utils/AddableSelect";
 import dumbData from "../../dumb_data.json";
 
 const PostmortemTable = ({ filterText = "", editable = false }) => {
     const [data, setData] = useState(dumbData.postmortems);
     const [currentPage, setCurrentPage] = useState(1);
-    const [editingRow, setEditingRow] = useState(null); // Przechowywanie ID wiersza, który jest edytowany
+    const [editingRow, setEditingRow] = useState(null);
     const itemsPerPage = 10;
 
     const filteredData = data.filter((row) =>
@@ -26,7 +27,7 @@ const PostmortemTable = ({ filterText = "", editable = false }) => {
     };
 
     const handleEdit = (id) => {
-        setEditingRow(id); // Ustawianie ID wiersza do edycji
+        setEditingRow(id);
     };
 
     const handleDelete = (id) => {
@@ -35,18 +36,40 @@ const PostmortemTable = ({ filterText = "", editable = false }) => {
     };
 
     const handleSave = (id) => {
-        // Możesz tutaj dodać logikę do zapisywania edytowanych danych
-        setEditingRow(null); // Zakończ edytowanie po zapisaniu
+        setEditingRow(null);
     };
 
-    const handleInputChange = (e, id, field) => {
+    const handleSelectChange = (newValue, id, field) => {
         const newData = data.map(row => {
             if (row.id === id) {
-                return { ...row, [field]: e.target.value };
+                return { ...row, [field]: newValue.map(opt => opt.value).join(", ") };
             }
             return row;
         });
         setData(newData);
+    };
+
+    const options = {
+        assigned_to: [
+            { value: 'John Doe', label: 'John Doe' },
+            { value: 'Jane Smith', label: 'Jane Smith' },
+            { value: 'Michael Brown', label: 'Michael Brown' }
+        ],
+        identified_issue: [
+            { value: 'Network Issue', label: 'Network Issue' },
+            { value: 'Database Error', label: 'Database Error' },
+            { value: 'Software Bug', label: 'Software Bug' }
+        ],
+        rca: [
+            { value: 'Root Cause A', label: 'Root Cause A' },
+            { value: 'Root Cause B', label: 'Root Cause B' },
+            { value: 'Root Cause C', label: 'Root Cause C' }
+        ],
+        technology: [
+            { value: 'JavaScript', label: 'JavaScript' },
+            { value: 'Python', label: 'Python' },
+            { value: 'AWS', label: 'AWS' }
+        ]
     };
 
     return (
@@ -64,85 +87,39 @@ const PostmortemTable = ({ filterText = "", editable = false }) => {
                         <th style={{ width: "10%" }}>Identified Issue</th>
                         <th style={{ width: "10%" }}>RCA</th>
                         <th style={{ width: "10%" }}>Technology</th>
-                        {editable && <th style={{ width: "16%" }}>Actions</th>}
+                        { editable && <th style={{ width: "16%" }}>Actions</th> }
                     </tr>
                 </thead>
                 <tbody>
                     {currentItems.map((row) => (
                         <tr key={row.id}>
                             <td>{row.id}</td>
+                            <td>{row.incident}</td>
+                            <td>{row.prep}</td>
                             <td>
                                 {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.incident}
-                                        onChange={(e) => handleInputChange(e, row.id, 'incident')}
-                                    />
-                                ) : (
-                                    row.incident
-                                )}
-                            </td>
-                            <td>
-                                {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.prep}
-                                        onChange={(e) => handleInputChange(e, row.id, 'prep')}
-                                    />
-                                ) : (
-                                    row.prep
-                                )}
-                            </td>
-                            <td>
-                                {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.assigned_to}
-                                        onChange={(e) => handleInputChange(e, row.id, 'assigned_to')}
+                                    <DynamicSelect
+                                        items={options.assigned_to}
+                                        type="user"
+                                        label="Assigned To"
+                                        value={row.assigned_to.split(", ").map(value => ({ value, label: value }))}
+                                        onChange={(newValue) => handleSelectChange(newValue, row.id, "assigned_to")}
                                     />
                                 ) : (
                                     row.assigned_to
                                 )}
                             </td>
+                            <td>{row.issue_date}</td>
+                            <td>{row.in_scope}</td>
+                            <td>{row.comments}</td>
                             <td>
                                 {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.issue_date}
-                                        onChange={(e) => handleInputChange(e, row.id, 'issue_date')}
-                                    />
-                                ) : (
-                                    row.issue_date
-                                )}
-                            </td>
-                            <td>
-                                {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.in_scope}
-                                        onChange={(e) => handleInputChange(e, row.id, 'in_scope')}
-                                    />
-                                ) : (
-                                    row.in_scope
-                                )}
-                            </td>
-                            <td>
-                                {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.comments}
-                                        onChange={(e) => handleInputChange(e, row.id, 'comments')}
-                                    />
-                                ) : (
-                                    row.comments
-                                )}
-                            </td>
-                            <td>
-                                {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.identified_issue}
-                                        onChange={(e) => handleInputChange(e, row.id, 'identified_issue')}
+                                    <DynamicSelect
+                                        items={options.identified_issue}
+                                        type="issue"
+                                        label="Identified Issue"
+                                        value={row.identified_issue.split(", ").map(value => ({ value, label: value }))}
+                                        onChange={(newValue) => handleSelectChange(newValue, row.id, "identified_issue")}
                                     />
                                 ) : (
                                     row.identified_issue
@@ -150,10 +127,12 @@ const PostmortemTable = ({ filterText = "", editable = false }) => {
                             </td>
                             <td>
                                 {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.rca}
-                                        onChange={(e) => handleInputChange(e, row.id, 'rca')}
+                                    <DynamicSelect
+                                        items={options.rca}
+                                        type="RCA"
+                                        label="RCA"
+                                        value={row.rca.split(", ").map(value => ({ value, label: value }))}
+                                        onChange={(newValue) => handleSelectChange(newValue, row.id, "rca")}
                                     />
                                 ) : (
                                     row.rca
@@ -161,10 +140,12 @@ const PostmortemTable = ({ filterText = "", editable = false }) => {
                             </td>
                             <td>
                                 {editingRow === row.id ? (
-                                    <FormControl
-                                        type="text"
-                                        value={row.technology}
-                                        onChange={(e) => handleInputChange(e, row.id, 'technology')}
+                                    <DynamicSelect
+                                        items={options.technology}
+                                        type="technology"
+                                        label="Technology"
+                                        value={row.technology.split(", ").map(value => ({ value, label: value }))}
+                                        onChange={(newValue) => handleSelectChange(newValue, row.id, "technology")}
                                     />
                                 ) : (
                                     row.technology
@@ -205,7 +186,7 @@ const PostmortemTable = ({ filterText = "", editable = false }) => {
             <Pagination>
                 <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
                 <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-
+                
                 {[...Array(totalPages)].map((_, idx) => (
                     <Pagination.Item
                         key={idx + 1}
