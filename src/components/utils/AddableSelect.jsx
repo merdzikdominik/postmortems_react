@@ -10,6 +10,22 @@ const DynamicSelect = ({ items, type, label }) => {
     setOptions((prevOptions) => [...prevOptions, newOption]);
   };
 
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minWidth: "190px",
+    }),
+    menu: (provided) => ({
+      ...provided,
+      width: "auto",
+      minWidth: "190px",
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      maxWidth: "180px"
+    }),
+  };
+
   return (
     <div>
       <Form.Group controlId="select">
@@ -19,6 +35,7 @@ const DynamicSelect = ({ items, type, label }) => {
           options={options}
           onCreateOption={handleCreateOption}
           placeholder={`Select or add ${type}`}
+          styles={customStyles} // Przekazanie zdefiniowanych stylów
         />
       </Form.Group>
     </div>
